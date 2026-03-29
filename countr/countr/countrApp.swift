@@ -26,11 +26,13 @@ struct countrApp: App {
     }()
 
     @State private var hapticService = HapticService()
+    @State private var undoService = UndoService()
 
     var body: some Scene {
         WindowGroup {
             MainTabView()
                 .environment(hapticService)
+                .environment(undoService)
         }
         .modelContainer(sharedModelContainer)
     }
