@@ -147,8 +147,59 @@ struct CounterCard: View {
         return StreakService.calculateStreak(mode: counter.resetMode, history: history, currentDate: Counter.todayString(), currentCount: counter.count)
     }
 
+    @MainActor
     private func shareCounter() {
-        // Placeholder — implemented in Task 14
+        let shareView = VStack(alignment: .leading, spacing: 12) {
+            Text(counter.name).font(.headline)
+            HStack(alignment: .firstTextBaseline) {
+                Text("\(counter.count)").font(.system(size: 48, weight: .bold, design: .rounded))
+                if let goal = counter.goal {
+                    Text("/ \(goal)").font(.title3).foregroundStyle(.secondary)
+                }
+            }
+            if let goal = counter.goal {
+                ProgressBar(value: counter.count, goal: goal, color: counter.color.color)
+            }
+            if streak >= 2 {
+                HStack(spacing: 4) {
+                    Text("\u{1F525}")
+                    Text("\(streak) day streak").font(.caption)
+                }
+            }
+            Text("— countr").font(.caption).foregroundStyle(.secondary)
+        }
+        .padding(20)
+        .frame(width: 300)
+        .background(Color(.systemBackground))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+
+        let renderer = ImageRenderer(content: shareView)
+        renderer.scale = UIScreen.main.scale
+
+        guard let image = renderer.uiImage else {
+            let text = shareText()
+            let controller = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+            presentShareSheet(controller)
+            return
+        }
+
+        let controller = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        presentShareSheet(controller)
+    }
+
+    private func shareText() -> String {
+        var text = "\(counter.name): \(counter.count)"
+        if let goal = counter.goal { text += " / \(goal)" }
+        if streak >= 2 { text += " \u{1F525} \(streak) day streak" }
+        text += "\n— countr"
+        return text
+    }
+
+    private func presentShareSheet(_ controller: UIActivityViewController) {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first,
+              let rootVC = window.rootViewController else { return }
+        rootVC.present(controller, animated: true)
     }
 
     private var accessibilityDescription: String {
