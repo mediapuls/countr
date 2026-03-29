@@ -27,6 +27,7 @@ struct countrApp: App {
 
     @State private var hapticService = HapticService()
     @State private var undoService = UndoService()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
@@ -35,5 +36,12 @@ struct countrApp: App {
                 .environment(undoService)
         }
         .modelContainer(sharedModelContainer)
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active {
+                let context = sharedModelContainer.mainContext
+                let counters = (try? context.fetch(FetchDescriptor<Counter>())) ?? []
+                ResetService.processResets(counters: counters, context: context)
+            }
+        }
     }
 }
