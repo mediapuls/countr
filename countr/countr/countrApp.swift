@@ -25,9 +25,12 @@ struct countrApp: App {
         }
     }()
 
+    @State private var hapticService = HapticService()
+
     var body: some Scene {
         WindowGroup {
             MainTabView()
+                .environment(hapticService)
         }
         .modelContainer(sharedModelContainer)
     }
