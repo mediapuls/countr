@@ -18,7 +18,7 @@ enum StreakService {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = .current
-        var calendar = Calendar(identifier: .gregorian)
+        var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .current
         guard let today = formatter.date(from: currentDate) else { return 0 }
 
@@ -42,7 +42,7 @@ enum StreakService {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
         formatter.timeZone = .current
-        var calendar = Calendar(identifier: .gregorian)
+        var calendar = Calendar(identifier: .iso8601)
         calendar.timeZone = .current
         guard let today = formatter.date(from: currentDate) else { return 0 }
 

@@ -13,7 +13,8 @@ enum ResetService {
         guard let last = formatter.date(from: lastResetDate),
               let current = formatter.date(from: currentDate) else { return false }
 
-        let calendar = Calendar.current
+        var calendar = Calendar(identifier: .iso8601)
+        calendar.timeZone = .current
 
         switch mode {
         case .manual: return false
