@@ -112,6 +112,7 @@ struct CounterCard: View {
             celebration.triggerConfetti()
         }
         streak = loadStreak()
+        WidgetSyncService.sync(context: modelContext)
     }
 
     private func decrement() {
@@ -122,6 +123,7 @@ struct CounterCard: View {
         haptics.lightImpact()
         saveTodayHistory()
         streak = loadStreak()
+        WidgetSyncService.sync(context: modelContext)
     }
 
     private func saveTodayHistory() {

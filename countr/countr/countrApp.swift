@@ -68,6 +68,7 @@ struct countrApp: App {
                 ResetService.processResets(counters: counters, context: context)
                 try? context.save()
                 NotificationService.rescheduleAll(counters: counters)
+                WidgetSyncService.sync(context: context)
             }
         }
     }
