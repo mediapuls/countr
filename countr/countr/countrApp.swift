@@ -30,17 +30,35 @@ struct countrApp: App {
     @State private var celebrationService = CelebrationService()
     @Environment(\.scenePhase) private var scenePhase
 
+    @AppStorage("onboarding_complete") private var onboardingComplete: Bool = false
+    @AppStorage("theme_mode") private var themeMode: String = "auto"
+
+    private var preferredColorScheme: ColorScheme? {
+        switch themeMode {
+        case "light": return .light
+        case "dark": return .dark
+        default: return nil
+        }
+    }
+
     var body: some Scene {
         WindowGroup {
-            MainTabView()
-                .environment(hapticService)
-                .environment(undoService)
-                .environment(celebrationService)
-                .overlay {
-                    if celebrationService.isShowingConfetti {
-                        ConfettiView().ignoresSafeArea()
-                    }
+            Group {
+                if onboardingComplete {
+                    MainTabView()
+                        .environment(hapticService)
+                        .environment(undoService)
+                        .environment(celebrationService)
+                        .overlay {
+                            if celebrationService.isShowingConfetti {
+                                ConfettiView().ignoresSafeArea()
+                            }
+                        }
+                } else {
+                    OnboardingScreen()
                 }
+            }
+            .preferredColorScheme(preferredColorScheme)
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, newPhase in

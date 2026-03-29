@@ -12,7 +12,7 @@ struct MainTabView: View {
                 StatsScreen()
             }
             Tab("Settings", systemImage: "gearshape.fill", value: 2) {
-                Text("Settings")
+                SettingsScreen()
             }
         }
     }
