@@ -48,6 +48,8 @@ struct countrApp: App {
                 let context = sharedModelContainer.mainContext
                 let counters = (try? context.fetch(FetchDescriptor<Counter>())) ?? []
                 ResetService.processResets(counters: counters, context: context)
+                try? context.save()
+                NotificationService.rescheduleAll(counters: counters)
             }
         }
     }
