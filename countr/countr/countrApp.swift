@@ -27,7 +27,7 @@ struct countrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Text("countr")
+            MainTabView()
         }
         .modelContainer(sharedModelContainer)
     }
