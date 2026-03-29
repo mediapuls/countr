@@ -27,6 +27,7 @@ struct countrApp: App {
 
     @State private var hapticService = HapticService()
     @State private var undoService = UndoService()
+    @State private var celebrationService = CelebrationService()
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
@@ -34,6 +35,12 @@ struct countrApp: App {
             MainTabView()
                 .environment(hapticService)
                 .environment(undoService)
+                .environment(celebrationService)
+                .overlay {
+                    if celebrationService.isShowingConfetti {
+                        ConfettiView().ignoresSafeArea()
+                    }
+                }
         }
         .modelContainer(sharedModelContainer)
         .onChange(of: scenePhase) { _, newPhase in
