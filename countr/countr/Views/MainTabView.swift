@@ -9,7 +9,7 @@ struct MainTabView: View {
                 HomeScreen()
             }
             Tab("Stats", systemImage: "chart.bar.fill", value: 1) {
-                Text("Stats")
+                StatsScreen()
             }
             Tab("Settings", systemImage: "gearshape.fill", value: 2) {
                 Text("Settings")
