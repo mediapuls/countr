@@ -12,7 +12,9 @@ import SwiftData
 struct countrApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Counter.self,
+            CounterGroup.self,
+            DailyHistory.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +27,7 @@ struct countrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Text("countr")
         }
         .modelContainer(sharedModelContainer)
     }
