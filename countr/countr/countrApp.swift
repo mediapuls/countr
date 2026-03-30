@@ -29,6 +29,8 @@ struct countrApp: App {
     @State private var undoService = UndoService()
     @State private var celebrationService = CelebrationService()
     @State private var liveActivityService = LiveActivityService()
+    // Initialised here so WCSession activates at app launch
+    private let watchConnectivity = WatchConnectivityService.shared
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("onboarding_complete") private var onboardingComplete: Bool = false
@@ -71,6 +73,7 @@ struct countrApp: App {
                 try? context.save()
                 NotificationService.rescheduleAll(counters: counters)
                 WidgetSyncService.sync(context: context)
+                WatchConnectivityService.shared.sendCounterData(context: context)
                 // End live activity if the tracked counter was reset
                 if let trackedId = liveActivityService.activeCounterId,
                    let trackedCounter = counters.first(where: { $0.id == trackedId }),
