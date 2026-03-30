@@ -7,6 +7,7 @@ struct CounterCard: View {
     @Environment(HapticService.self) private var haptics
     @Environment(UndoService.self) private var undoService
     @Environment(CelebrationService.self) private var celebration
+    @Environment(LiveActivityService.self) private var liveActivityService
 
     @State private var countScale: CGFloat = 1.0
     @State private var isPressed: Bool = false
@@ -91,10 +92,28 @@ struct CounterCard: View {
                 Image(systemName: "plus.circle.fill").font(.title2).foregroundStyle(counter.color.color)
             }.buttonStyle(.plain)
             Spacer()
+            pinButton
+            Spacer()
             Button { shareCounter() } label: {
                 Image(systemName: "square.and.arrow.up").font(.title3).foregroundStyle(.secondary)
             }.buttonStyle(.plain)
         }
+    }
+
+    private var pinButton: some View {
+        let isTracking = liveActivityService.isTrackingCounter(counter.id)
+        return Button {
+            if isTracking {
+                liveActivityService.endTracking()
+            } else {
+                liveActivityService.startTracking(counter: counter)
+            }
+        } label: {
+            Image(systemName: isTracking ? "pin.slash" : "pin")
+                .font(.title3)
+                .foregroundStyle(isTracking ? counter.color.color : .secondary)
+        }
+        .buttonStyle(.plain)
     }
 
     private func increment(by amount: Int) {
@@ -107,9 +126,15 @@ struct CounterCard: View {
         }
         haptics.lightImpact()
         saveTodayHistory()
+        if liveActivityService.isTrackingCounter(counter.id) {
+            liveActivityService.updateCount(counter.count)
+        }
         if celebration.checkGoalReached(counter: counter) {
             haptics.success()
             celebration.triggerConfetti()
+            if liveActivityService.isTrackingCounter(counter.id) {
+                liveActivityService.endTracking()
+            }
         }
         streak = loadStreak()
         WidgetSyncService.sync(context: modelContext)
@@ -122,6 +147,9 @@ struct CounterCard: View {
         withAnimation { counter.count -= amount }
         haptics.lightImpact()
         saveTodayHistory()
+        if liveActivityService.isTrackingCounter(counter.id) {
+            liveActivityService.updateCount(counter.count)
+        }
         streak = loadStreak()
         WidgetSyncService.sync(context: modelContext)
     }

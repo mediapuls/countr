@@ -28,6 +28,7 @@ struct countrApp: App {
     @State private var hapticService = HapticService()
     @State private var undoService = UndoService()
     @State private var celebrationService = CelebrationService()
+    @State private var liveActivityService = LiveActivityService()
     @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage("onboarding_complete") private var onboardingComplete: Bool = false
@@ -49,6 +50,7 @@ struct countrApp: App {
                         .environment(hapticService)
                         .environment(undoService)
                         .environment(celebrationService)
+                        .environment(liveActivityService)
                         .overlay {
                             if celebrationService.isShowingConfetti {
                                 ConfettiView().ignoresSafeArea()
@@ -69,6 +71,12 @@ struct countrApp: App {
                 try? context.save()
                 NotificationService.rescheduleAll(counters: counters)
                 WidgetSyncService.sync(context: context)
+                // End live activity if the tracked counter was reset
+                if let trackedId = liveActivityService.activeCounterId,
+                   let trackedCounter = counters.first(where: { $0.id == trackedId }),
+                   trackedCounter.count == 0 {
+                    liveActivityService.endTracking()
+                }
             }
         }
     }
