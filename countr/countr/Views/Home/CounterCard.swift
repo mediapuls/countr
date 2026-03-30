@@ -3,6 +3,7 @@ import SwiftData
 
 struct CounterCard: View {
     @Bindable var counter: Counter
+    var onEdit: (() -> Void)?
     @Environment(\.modelContext) private var modelContext
     @Environment(HapticService.self) private var haptics
     @Environment(UndoService.self) private var undoService
@@ -47,13 +48,23 @@ struct CounterCard: View {
     private var headerRow: some View {
         HStack {
             Text(counter.name).font(.headline)
-            Spacer()
             if counter.resetMode != .manual {
                 Text(counter.resetMode.label)
                     .font(.caption).padding(.horizontal, 8).padding(.vertical, 3)
                     .background(counter.color.color.opacity(0.15))
                     .foregroundStyle(counter.color.color)
                     .clipShape(Capsule())
+            }
+            Spacer()
+            if let onEdit {
+                Button {
+                    onEdit()
+                } label: {
+                    Image(systemName: "ellipsis")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

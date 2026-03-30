@@ -14,7 +14,7 @@ struct CreateCounterSheet: View {
     @State private var stepValue: String = "1"
     @State private var goalText: String = ""
     @State private var color: CounterColor = .blue
-    @State private var selectedGroup: CounterGroup?
+    @State private var selectedGroupID: UUID?
     @State private var newGroupName: String = ""
     @State private var showNewGroupField: Bool = false
     @State private var reminderEnabled: Bool = false
@@ -30,9 +30,9 @@ struct CreateCounterSheet: View {
             Form {
                 Section("Name") { TextField("Counter name", text: $name) }
                 Section("Group") {
-                    Picker("Group", selection: $selectedGroup) {
-                        Text("None").tag(nil as CounterGroup?)
-                        ForEach(groups) { group in Text(group.name).tag(group as CounterGroup?) }
+                    Picker("Group", selection: $selectedGroupID) {
+                        Text("None").tag(nil as UUID?)
+                        ForEach(groups) { group in Text(group.name).tag(group.id as UUID?) }
                     }
                     Button("New Group") { showNewGroupField = true }
                     if showNewGroupField {
@@ -68,7 +68,7 @@ struct CreateCounterSheet: View {
         guard !newGroupName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         let group = CounterGroup(name: newGroupName, order: groups.count)
         modelContext.insert(group)
-        selectedGroup = group
+        selectedGroupID = group.id
         showNewGroupField = false
         newGroupName = ""
     }
@@ -80,6 +80,7 @@ struct CreateCounterSheet: View {
         formatter.dateFormat = "HH:mm"
         let reminderTimeString: String? = reminderEnabled ? formatter.string(from: reminderTime) : nil
 
+        let selectedGroup = groups.first { $0.id == selectedGroupID }
         let counter = Counter(
             name: name.trimmingCharacters(in: .whitespaces),
             resetMode: resetMode,

@@ -15,7 +15,7 @@ struct EditCounterSheet: View {
     @State private var stepValue: String = "1"
     @State private var goalText: String = ""
     @State private var color: CounterColor = .blue
-    @State private var selectedGroup: CounterGroup?
+    @State private var selectedGroupID: UUID?
     @State private var reminderEnabled: Bool = false
     @State private var reminderTime: Date = Date()
     @State private var showNewGroupField: Bool = false
@@ -28,9 +28,9 @@ struct EditCounterSheet: View {
             Form {
                 Section("Name") { TextField("Counter name", text: $name) }
                 Section("Group") {
-                    Picker("Group", selection: $selectedGroup) {
-                        Text("None").tag(nil as CounterGroup?)
-                        ForEach(groups) { group in Text(group.name).tag(group as CounterGroup?) }
+                    Picker("Group", selection: $selectedGroupID) {
+                        Text("None").tag(nil as UUID?)
+                        ForEach(groups) { group in Text(group.name).tag(group.id as UUID?) }
                     }
                     Button("New Group") { showNewGroupField = true }
                     if showNewGroupField {
@@ -81,7 +81,7 @@ struct EditCounterSheet: View {
                 stepValue = "\(counter.stepValue)"
                 goalText = counter.goal.map { "\($0)" } ?? ""
                 color = counter.color
-                selectedGroup = counter.group
+                selectedGroupID = counter.group?.id
                 reminderEnabled = counter.reminderTime != nil
                 if let timeStr = counter.reminderTime {
                     let formatter = DateFormatter()
@@ -96,7 +96,7 @@ struct EditCounterSheet: View {
         guard !newGroupName.trimmingCharacters(in: .whitespaces).isEmpty else { return }
         let group = CounterGroup(name: newGroupName, order: groups.count)
         modelContext.insert(group)
-        selectedGroup = group
+        selectedGroupID = group.id
         showNewGroupField = false
         newGroupName = ""
     }
@@ -107,7 +107,7 @@ struct EditCounterSheet: View {
         counter.stepValue = max(1, Int(stepValue) ?? 1)
         counter.goal = goalText.isEmpty ? nil : Int(goalText)
         counter.color = color
-        counter.group = selectedGroup
+        counter.group = groups.first { $0.id == selectedGroupID }
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         counter.reminderTime = reminderEnabled ? formatter.string(from: reminderTime) : nil

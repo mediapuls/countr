@@ -63,15 +63,9 @@ struct HomeScreen: View {
     }
 
     private func counterRow(_ counter: Counter) -> some View {
-        CounterCard(counter: counter)
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    counterToEdit = counter
-                } label: {
-                    Image(systemName: "ellipsis").font(.body).foregroundStyle(.secondary).padding(12)
-                }
-                .buttonStyle(.plain)
-            }
+        CounterCard(counter: counter, onEdit: {
+            counterToEdit = counter
+        })
     }
 
     private var ungroupedCounters: [Counter] {
