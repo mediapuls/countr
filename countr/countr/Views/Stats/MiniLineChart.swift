@@ -34,10 +34,12 @@ struct MiniLineChart: View {
         .chartXAxis {
             AxisMarks(values: .automatic) { _ in
                 AxisValueLabel()
-                    .font(.system(size: 8))
+                    .font(.system(size: 9))
                     .foregroundStyle(.secondary)
             }
         }
-        .frame(height: 60)
+        .chartYScale(domain: .automatic(includesZero: true))
+        .frame(height: 70)
+        .padding(.top, 4)
     }
 }

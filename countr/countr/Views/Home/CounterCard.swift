@@ -26,7 +26,9 @@ struct CounterCard: View {
         .background(Color(.secondarySystemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .overlay(alignment: .leading) {
-            RoundedRectangle(cornerRadius: 16).fill(counter.color.color).frame(width: 4)
+            counter.color.color
+                .frame(width: 4)
+                .clipShape(RoundedRectangle(cornerRadius: 16))
         }
         .scaleEffect(isPressed ? 0.97 : 1.0)
         .animation(.spring(duration: 0.2), value: isPressed)

@@ -66,9 +66,9 @@ struct StatsCounterCard: View {
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: 14))
             .overlay(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(counter.color.color)
+                counter.color.color
                     .frame(width: 4)
+                    .clipShape(RoundedRectangle(cornerRadius: 14))
             }
         }
         .buttonStyle(.plain)
