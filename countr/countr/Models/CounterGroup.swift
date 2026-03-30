@@ -7,7 +7,7 @@ final class CounterGroup {
     var name: String = ""
     var order: Int = 0
     var isExpanded: Bool = true
-    var counters: [Counter] = []
+    var counters: [Counter]? = []
 
     init(name: String, order: Int = 0) {
         self.id = UUID()

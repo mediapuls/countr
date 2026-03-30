@@ -43,7 +43,7 @@ import Foundation
     let group = CounterGroup(name: "Health", order: 0)
     #expect(group.name == "Health")
     #expect(group.isExpanded == true)
-    #expect(group.counters.isEmpty)
+    #expect((group.counters ?? []).isEmpty)
 }
 
 @Test func dailyHistoryInitializes() {

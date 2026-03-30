@@ -45,7 +45,7 @@ struct HomeScreen: View {
             LazyVStack(spacing: 12) {
                 ForEach(ungroupedCounters) { counter in counterRow(counter) }
                 ForEach(groups) { group in
-                    let groupCounters = group.counters.sorted { $0.order < $1.order }
+                    let groupCounters = (group.counters ?? []).sorted { $0.order < $1.order }
                     if !groupCounters.isEmpty {
                         GroupHeader(group: group)
                         if group.isExpanded {
