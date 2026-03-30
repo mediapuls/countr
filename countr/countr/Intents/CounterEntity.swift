@@ -28,7 +28,7 @@ struct CounterEntity: AppEntity {
 
 struct CounterEntityQuery: EntityQuery {
     func entities(for identifiers: [String]) async throws -> [CounterEntity] {
-        let context = try ModelContext(ModelContainer(for: Counter.self))
+        let context = try ModelContext(ModelContainerHelper.createContainer())
         let descriptor = FetchDescriptor<Counter>()
         let counters = try context.fetch(descriptor)
         return counters
@@ -37,7 +37,7 @@ struct CounterEntityQuery: EntityQuery {
     }
 
     func suggestedEntities() async throws -> [CounterEntity] {
-        let context = try ModelContext(ModelContainer(for: Counter.self))
+        let context = try ModelContext(ModelContainerHelper.createContainer())
         let descriptor = FetchDescriptor<Counter>(sortBy: [SortDescriptor(\Counter.order)])
         let counters = try context.fetch(descriptor)
         return counters.map { CounterEntity(from: $0) }

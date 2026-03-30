@@ -10,7 +10,7 @@ struct GetCounterIntent: AppIntent {
     var counter: CounterEntity
 
     func perform() async throws -> some IntentResult & ReturnsValue<Int> & ProvidesDialog {
-        let context = try ModelContext(ModelContainer(for: Counter.self, CounterGroup.self, DailyHistory.self))
+        let context = try ModelContext(ModelContainerHelper.createContainer())
         guard let id = UUID(uuidString: counter.id) else {
             throw IntentError.invalidParameter
         }
